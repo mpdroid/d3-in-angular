@@ -1,0 +1,88 @@
+:host {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 14px;
+    color: #333;
+    max-width: 100%;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 8px 0;
+}
+
+p {
+    margin: 0;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.toolbar {
+    height: 5rem;
+    width: 100vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // background-color: #1976d2;
+    color: white;
+    span {
+        font-weight: 900;
+        margin: 0 auto;
+        font-family: 'Gloria Hallelujah', cursive;
+        font-size: 3rem;
+        color: #FF5733;
+    }
+
+}
+
+.watermark {
+    display: flex;
+    position: absolute;
+    width: 100vw;
+    opacity: 0.3;
+    top: -40vh;
+    left: -40vw;
+}
+
+@media screen and (max-width: 767px) {
+    .toolbar span {
+        margin: 0 auto;
+        font-family: 'Gloria Hallelujah', cursive;
+        font-size: 2rem;
+        color: #FF5733;
+    }
+    .watermark {
+        display: flex;
+        position: absolute;
+        width: 100vw;
+        opacity: 0.3;
+        top: -40vh;
+        left: -50vw;
+    }
+}
+
+
+@media screen and (max-width: 414px) {
+    .toolbar span {
+        margin: 0 auto;
+        font-family: 'Gloria Hallelujah', cursive;
+        font-size: 1.2rem;
+        color: #FF5733;
+    }
+    .watermark {
+        display: flex;
+        position: absolute;
+        width: 100vw;
+        opacity: 0.3;
+        top: -40vh;
+        left: -50vw;
+    }
+}

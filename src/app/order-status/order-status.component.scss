@@ -1,0 +1,125 @@
+:host {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.container {
+    min-width: 350px;
+    width: 60vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background-color: transparent;
+    .title {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 2rem;
+        font-family: 'Roboto';
+        height: 2rem;
+        width: 100%;
+        margin: 0 auto 1rem auto;
+
+        .span {
+            height: 3rem;
+            line-height: 3rem;
+        }
+        .right {
+            height: 3rem;
+            font-size: 3rem;
+            cursor: pointer;
+        }
+    }
+
+    #ordersByStatus {
+        height: 70vh;
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        position: relative;
+
+        mat-select {
+            position: absolute;
+            top: 0;
+            right: 0px;
+            width: 20%;
+            padding: 5px;
+            font-size: 1rem;
+            font-family: 'Roboto';
+            z-index: 100;
+        }
+
+        #chartDiv {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: transparent;
+            height: 100%;
+            width: 100%;
+            #ordersByStatusChart {
+                display: flex;
+                height: 50%;
+                width: 100%;
+            }
+            #ordersByStatusTable {
+                display: flex;
+                height: 50%;
+                width: 100%;
+                max-width: 400px;
+                table {
+                  width: 100%;
+                  .preparing {
+                    color: #1f77b4;
+                    font-size: 3rem;
+                  }
+                  .ready {
+                    color: #ff7f0e;
+                    font-size: 3rem;
+                  }
+                  .inTransit {
+                    color: #2ca02c;
+                    font-size: 3rem;
+                  }
+                  .delivered {
+                    color: #d62728;
+                    font-size: 3rem;
+                  }
+                  .mat-column-legend {
+                    width: 20%;
+                  }
+                  .table-row {
+                    height: 20px !important;
+                  }
+                }
+            }
+        }
+    }
+}
+
+
+mat-option ::ng-deep .city {
+    font-size: 1rem;
+    font-family: 'Roboto';
+}
+
+@media screen and (max-width: 767px) {
+    .container {
+        .title {
+            font-size: 1.5rem;
+        }
+    }
+}
+
+@media screen and (max-width: 414px) {
+    .container {
+        .title {
+            font-size: 1rem;
+        }
+    }
+}
