@@ -1,4 +1,4 @@
-# Building reactive charts in Angular 8 using D3
+# Building Reactive Charts in Angular 8 using D3
 
 This projects shows how to build reactive charts inside an Angular 8 application using the D3 JavaScript framework.
 
