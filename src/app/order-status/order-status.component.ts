@@ -1,21 +1,16 @@
 import { Component, OnInit, OnDestroy, AfterContentInit, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { ViewChild } from '@angular/core';
 
-import { DonutChartComponent, DonutChartDatum } from './../donut-chart/donut-chart.component';
-
+import { DonutChartComponent } from './../donut-chart/donut-chart.component';
 
 import * as HOBBITON from './hobbiton.json';
 
 export class OrderState {
-    state: string;
-    stateDisplayValue: string;
-    count: number;
-}
-
-export class OrderStatesInCity {
-    city: string;
-    orderStates: OrderState[]
+  state: string;
+  stateDisplayValue: string;
+  count: number;
 }
 
 
@@ -26,103 +21,87 @@ export class OrderStatesInCity {
 })
 export class OrderStatusComponent implements OnInit, OnDestroy, AfterContentInit {
 
-  @ViewChild('ordersByStatusChart', {static: true}) chart: DonutChartComponent;
+  @ViewChild('ordersByStatusChart', { static: true }) chart: DonutChartComponent;
 
-  hobbiton = <OrderStatesInCity>HOBBITON;
+  orderStates: OrderState[];
 
-  cities = ['Arlington Heights', 'Buffalo Grove', 'Chicago', 'Deerfield', 'Elgin'];
-
-  selected = this.cities[0];
-
-  orderStatesByCity: OrderStatesInCity[] = [];
-
-  orderStatesInCurrentCity: OrderState[];
-
-  chartData: Map<string, number> ;
-
-  chartLabels: Map<string, string> ;
+  chartData: number[] = [];
 
   displayedColumns = ['legend', 'orderStatus', 'total'];
 
-
   refreshInterval;
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
 
   initialize() {
     if (this.refreshInterval) {
-        clearInterval(this.refreshInterval);
+      clearInterval(this.refreshInterval);
     }
     this.generateData();
-    this.setChartDataAndLabels();
-    this.chart.updateChart(this.chartData);
+    this.chart.data = [...this.chartData];
     this.refreshInterval = setInterval(() => {
-        this.updateStates();
-        this.setChartDataAndLabels();
-        this.chart.updateChart(this.chartData);
-    }, 5000);
+      this.updateStates();
+      this.chart.data = [...this.chartData];
+    }, 1000);
 
   }
 
   ngOnDestroy() {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+    }
   }
 
   ngAfterContentInit() {
-      this.initialize();
+    this.initialize();
   }
 
-  onSelect(event) {
-      this.initialize();
-  }
-
-  generateData(){
-        this.cities.forEach((city) => {
-            const osic = new OrderStatesInCity();
-            Object.assign(HOBBITON, osic);
-            osic.city = city;
-            osic.orderStates = [];
-            HOBBITON.orderStates.forEach((state) => {
-                const target = new OrderState();
-                target.state = state.state;
-                target.stateDisplayValue = state.stateDisplayValue;
-                target.count = randomInt(0, 100);
-                osic.orderStates.push(target);
-            });
-            this.orderStatesByCity.push(osic);
-        });
-    }
-
-    setChartDataAndLabels() {
-        this.chartData = new Map<string, number> ();
-        this.chartLabels = new Map<string, string> ();
-        this.orderStatesInCurrentCity = this.orderStatesByCity
-            .filter((osic) => osic.city === this.selected)[0]
-            .orderStates;
-
-        this.orderStatesInCurrentCity.forEach((state) => {
-                    this.chartData.set(state.state , state.count);
-                    this.chartLabels.set(state.state , state.stateDisplayValue);
-            });
+  generateData() {
+    this.orderStates = [];
+    HOBBITON.orderStates.forEach((state) => {
+      const target = new OrderState();
+      target.state = state.state;
+      target.stateDisplayValue = state.stateDisplayValue;
+      target.count = randomInt(0, 100);
+      this.orderStates.push(target);
+    });
+    this.chartData = [];
+    this.orderStates.forEach((state) => {
+      this.chartData.push(state.count);
+    });
   }
 
   updateStates() {
-          const increment = (val, plus, minus) => {
-            return val + plus - minus;
-          }
-          const newOrders = randomInt(0,10);
-          const newReady = randomInt(0,Math.min(10,this.orderStatesInCurrentCity[0].count));
-          const newTransit = randomInt(0,Math.min(10, this.orderStatesInCurrentCity[1].count));
-          const newDelivered = randomInt(0,Math.min(10, this.orderStatesInCurrentCity[2].count));
-          this.orderStatesInCurrentCity[0].count = increment(this.orderStatesInCurrentCity[0].count, newOrders, newReady);
-          this.orderStatesInCurrentCity[1].count = increment(this.orderStatesInCurrentCity[1].count, newReady, newTransit);
-          this.orderStatesInCurrentCity[2].count = increment(this.orderStatesInCurrentCity[2].count, newTransit, newDelivered);
-          this.orderStatesInCurrentCity[3].count = increment(this.orderStatesInCurrentCity[3].count, newDelivered, 0);
+    const increment = (val, plus, minus) => {
+      return val + plus - minus;
+    }
+    const newOrders = randomInt(0, 10);
+    const newReady = randomInt(0, Math.min(10, this.orderStates[0].count));
+    const newTransit = randomInt(0, Math.min(10, this.orderStates[1].count));
+    const newDelivered = randomInt(0, Math.min(10, this.orderStates[2].count));
+    this.orderStates[0].count = increment(this.orderStates[0].count, newOrders, newReady);
+    this.orderStates[1].count = increment(this.orderStates[1].count, newReady, newTransit);
+    this.orderStates[2].count = increment(this.orderStates[2].count, newTransit, newDelivered);
+    this.orderStates[3].count = increment(this.orderStates[3].count, newDelivered, 0);
+    this.chartData = [];
+    this.orderStates.forEach((state) => {
+      this.chartData.push(state.count);
+    });
   }
+
+  navigateLeft() {
+    this.router.navigate(['/delivery']);
+  }
+
+  navigateRight() {
+    this.router.navigate(['/delivery']);
+  }
+
 }
 
 export function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

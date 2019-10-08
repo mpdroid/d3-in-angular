@@ -1,4 +1,4 @@
-import {Component,OnInit,ElementRef,ViewEncapsulation} from'@angular/core';
+import {Component,OnInit,ElementRef,ViewEncapsulation, Input, SimpleChanges, OnChanges} from'@angular/core';
 
 import * as d3 from'd3';
 
@@ -15,8 +15,9 @@ export class DonutChartDatum {
         templateUrl:'./donut-chart.component.html',
         styleUrls:['./donut-chart.component.scss']
 })
-export class DonutChartComponent implements OnInit {
+export class DonutChartComponent implements OnInit, OnChanges {
 
+    @Input() data: number[];
     hostElement; // Native element hosting the SVG container
     svg; // Top level SVG element
     g; // SVG Group element
@@ -26,7 +27,7 @@ export class DonutChartComponent implements OnInit {
     slices; // Donut chart slice elements
     labels; // SVG data label elements
     totalLabel; // SVG label for total
-    rawData; // Raw chart values array array
+    rawData; // Raw chart values array
     total:number; // Total of chart values
     colorScale; // D3 color provider
     pieData: any; // Arc segment parameters for current data set
@@ -34,7 +35,6 @@ export class DonutChartComponent implements OnInit {
     colors = d3.scaleOrdinal(d3.schemeCategory10);
 
     // Pie function - transforms raw data to arc segment parameters
-    // Use this function to adjust shape of the pie or shape of the input data
     pie = d3.pie()
             .startAngle(-0.5 * Math.PI)
             .endAngle(0.5 * Math.PI)
@@ -47,7 +47,13 @@ export class DonutChartComponent implements OnInit {
 
     ngOnInit() {}
 
-    private createChart(data:Map<string, number>) {
+    ngOnChanges(changes: SimpleChanges) {
+      if(changes.data) {
+         this.updateChart(changes.data.currentValue);
+      }
+    }
+
+    private createChart(data: number[]) {
 
         this.processPieData(data);
 
@@ -90,11 +96,10 @@ export class DonutChartComponent implements OnInit {
     }
 
     private processPieData(data, initial = true) {
-        const valArr: number[] = Array.from(data.values());
-        this.rawData = valArr;
+        this.rawData = data;
         this.total = this.rawData.reduce((sum, next) =>sum + next, 0);
 
-        this.pieData = this.pie(valArr);
+        this.pieData = this.pie(data);
         if (initial) {
             this.pieDataPrevious = this.pieData;
         }
@@ -155,7 +160,7 @@ export class DonutChartComponent implements OnInit {
     }
 
 
-    public updateChart(data:Map<string, number>) {
+    public updateChart(data: number[]) {
         if (!this.svg) {
             this.createChart(data);
             return;
@@ -171,15 +176,16 @@ export class DonutChartComponent implements OnInit {
 
     private updateSlices() {
         this.slices = this.slices.data(this.pieData);
+        this.slices.transition().duration(750).attrTween("d", this.arcTween);
     }
 
     private updateLabels() {
+        this.totalLabel.text(this.total);
         this.labels.data(this.pieData);
         this.labels.each((datum, index, n) =>{
             d3.select(n[index]).text(this.labelValueFn(this.rawData[index]));
         });
         this.labels.transition().duration(750).attrTween("transform", this.labelTween);
-        this.slices.transition().duration(750).attrTween("d", this.arcTween);
     }
 
     private updateTotal() {

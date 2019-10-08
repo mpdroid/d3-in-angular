@@ -8,15 +8,20 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
+import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
 import { OrderStatusComponent } from './order-status/order-status.component';
 import { DonutChartComponent } from './donut-chart/donut-chart.component';
+import { OrderDeliveryComponent } from './order-delivery/order-delivery.component';
+import { AreaChartComponent } from './area-chart/area-chart.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     OrderStatusComponent,
-    DonutChartComponent
+    DonutChartComponent,
+    OrderDeliveryComponent,
+    AreaChartComponent
   ],
   imports: [
     BrowserModule,
@@ -26,7 +31,8 @@ import { DonutChartComponent } from './donut-chart/donut-chart.component';
     MatIconModule,
     MatCardModule,
     MatSelectModule,
-    MatTableModule
+    MatTableModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

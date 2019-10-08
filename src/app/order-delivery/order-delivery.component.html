@@ -1,29 +1,33 @@
 <mat-card class="container">
     <mat-card-title class="title">
         <mat-icon (click)="navigateLeft()" class="left">keyboard_arrow_left</mat-icon>
-        <div>Orders By Status</div>
+        <div>Order Delivery Time</div>
         <mat-icon (click)="navigateRight()" class="right">keyboard_arrow_right</mat-icon>
     </mat-card-title>
-    <mat-card-content id="ordersByStatus" #ordersByStatus>
+    <mat-card-content id="delivery" #delivery>
         <div id="chartAndDataContainer">
             <div id="chartContainer">
-                <app-donut-chart #ordersByStatusChart [data]="chartData"></app-donut-chart>
+                <app-area-chart #areaChart [data]="chartData"></app-area-chart>
             </div>
-            <div id="ordersByStatusTable">
-                <table mat-table [dataSource]="orderStates"
-                       *ngIf="orderStates"
+            <div id="deliveryTable">
+                <table mat-table [dataSource]="deliveryMetrics"
+                       *ngIf="deliveryMetrics"
                        class="mat-elevation-z8">
                     <ng-container matColumnDef="legend">
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let element" [ngClass]="element.state">&#9632;</td>
                     </ng-container>
-                    <ng-container matColumnDef="orderStatus">
-                        <th mat-header-cell *matHeaderCellDef>Order Status</th>
+                    <ng-container matColumnDef="stateDisplayValue">
+                        <th mat-header-cell *matHeaderCellDef>Order State</th>
                         <td mat-cell *matCellDef="let element">{{element.stateDisplayValue}}</td>
                     </ng-container>
-                    <ng-container matColumnDef="total">
-                        <th mat-header-cell *matHeaderCellDef>Total</th>
-                        <td mat-cell *matCellDef="let element">{{element.count}}</td>
+                    <ng-container matColumnDef="mean">
+                        <th mat-header-cell *matHeaderCellDef>Mean (min)</th>
+                        <td mat-cell *matCellDef="let element">{{element.mean}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="stdDev">
+                        <th mat-header-cell *matHeaderCellDef>Std. Dev.</th>
+                        <td mat-cell *matCellDef="let element">{{element.stdDev}}</td>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
