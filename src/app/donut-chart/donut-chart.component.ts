@@ -1,19 +1,19 @@
-import {Component,OnInit,ElementRef,ViewEncapsulation, Input, SimpleChanges, OnChanges} from'@angular/core';
+import { Component, OnInit, ElementRef, ViewEncapsulation, Input, SimpleChanges, OnChanges } from '@angular/core';
 
-import * as d3 from'd3';
+import * as d3 from 'd3';
 
 export class DonutChartDatum {
-    code:string;
-    displayValue:string;
-    count:number;
+    code: string;
+    displayValue: string;
+    count: number;
 }
 
 
 @Component({
-        selector:'app-donut-chart',
-        encapsulation:ViewEncapsulation.None,
-        templateUrl:'./donut-chart.component.html',
-        styleUrls:['./donut-chart.component.scss']
+    selector: 'app-donut-chart',
+    encapsulation: ViewEncapsulation.None,
+    templateUrl: './donut-chart.component.html',
+    styleUrls: ['./donut-chart.component.scss']
 })
 export class DonutChartComponent implements OnInit, OnChanges {
 
@@ -28,7 +28,7 @@ export class DonutChartComponent implements OnInit, OnChanges {
     labels; // SVG data label elements
     totalLabel; // SVG label for total
     rawData; // Raw chart values array
-    total:number; // Total of chart values
+    total: number; // Total of chart values
     colorScale; // D3 color provider
     pieData: any; // Arc segment parameters for current data set
     pieDataPrevious: any; // Arc segment parameters for previous data set - used for transitions
@@ -36,21 +36,21 @@ export class DonutChartComponent implements OnInit, OnChanges {
 
     // Pie function - transforms raw data to arc segment parameters
     pie = d3.pie()
-            .startAngle(-0.5 * Math.PI)
-            .endAngle(0.5 * Math.PI)
-            .sort(null)
-            .value((d:number) => d);
+        .startAngle(-0.5 * Math.PI)
+        .endAngle(0.5 * Math.PI)
+        .sort(null)
+        .value((d: number) => d);
 
-    constructor(private elRef:ElementRef) {
+    constructor(private elRef: ElementRef) {
         this.hostElement = this.elRef.nativeElement;
     }
 
-    ngOnInit() {}
+    ngOnInit() { }
 
     ngOnChanges(changes: SimpleChanges) {
-      if(changes.data) {
-         this.updateChart(changes.data.currentValue);
-      }
+        if (changes.data) {
+            this.updateChart(changes.data.currentValue);
+        }
     }
 
     private createChart(data: number[]) {
@@ -79,14 +79,14 @@ export class DonutChartComponent implements OnInit, OnChanges {
         let viewBoxHeight = 100;
         let viewBoxWidth = 200;
         this.svg = d3.select(this.hostElement).append('svg')
-                .attr('width', '100%')
-                .attr('height', '100%')
-                .attr('viewBox', '0 0 ' + viewBoxWidth + ' ' + viewBoxHeight);
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .attr('viewBox', '0 0 ' + viewBoxWidth + ' ' + viewBoxHeight);
     }
 
     private addGraphicsElement() {
         this.g = this.svg.append("g")
-                .attr("transform", "translate(100,90)");
+            .attr("transform", "translate(100,90)");
     }
 
     private setColorScale() {
@@ -97,7 +97,7 @@ export class DonutChartComponent implements OnInit, OnChanges {
 
     private processPieData(data, initial = true) {
         this.rawData = data;
-        this.total = this.rawData.reduce((sum, next) =>sum + next, 0);
+        this.total = this.rawData.reduce((sum, next) => sum + next, 0);
 
         this.pieData = this.pie(data);
         if (initial) {
@@ -110,31 +110,31 @@ export class DonutChartComponent implements OnInit, OnChanges {
         this.innerRadius = 50;
         this.radius = 80;
         this.arc = d3.arc()
-                .innerRadius(this.innerRadius)
-                .outerRadius(this.radius);
+            .innerRadius(this.innerRadius)
+            .outerRadius(this.radius);
     }
 
     private addSlicesToTheDonut() {
         this.slices = this.g.selectAll('allSlices')
-                .data(this.pieData)
-                .enter()
-                .append('path')
-                .attr('d', this.arc)
-                .attr('fill', (datum, index) => {
-            return this.colorScale(`${index}`);
-        })
-        .style('opacity', 1);
+            .data(this.pieData)
+            .enter()
+            .append('path')
+            .attr('d', this.arc)
+            .attr('fill', (datum, index) => {
+                return this.colorScale(`${index}`);
+            })
+            .style('opacity', 1);
     }
 
     private addDonutTotalLabel() {
         this.totalLabel = this.svg
-                .append('text')
-                .text(this.total)
-                .attr('id', 'total')
-                .attr('x', 100)
-                .attr('y', 80)
-                .style('font-size', '10px')
-                .style('text-anchor', 'middle');
+            .append('text')
+            .text(this.total)
+            .attr('id', 'total')
+            .attr('x', 100)
+            .attr('y', 80)
+            .style('font-size', '10px')
+            .style('text-anchor', 'middle');
     }
 
     // Creates an "interpolator" for animated transition for arc slices
@@ -151,14 +151,13 @@ export class DonutChartComponent implements OnInit, OnChanges {
     // Creates an "interpolator" for animated transition for arc labels
     //   given previous and new label positions,
     //   generates a series of arc states (be)tween start and end state
-    labelTween = (datum, index) =>{
+    labelTween = (datum, index) => {
         const interpolation = d3.interpolate(this.pieDataPrevious[index], datum);
         this.pieDataPrevious[index] = interpolation(0);
         return (t) => {
             return 'translate(' + this.arc.centroid(interpolation(t)) + ')';
         }
     }
-
 
     public updateChart(data: number[]) {
         if (!this.svg) {
@@ -182,7 +181,7 @@ export class DonutChartComponent implements OnInit, OnChanges {
     private updateLabels() {
         this.totalLabel.text(this.total);
         this.labels.data(this.pieData);
-        this.labels.each((datum, index, n) =>{
+        this.labels.each((datum, index, n) => {
             d3.select(n[index]).text(this.labelValueFn(this.rawData[index]));
         });
         this.labels.transition().duration(750).attrTween("transform", this.labelTween);
@@ -202,20 +201,20 @@ export class DonutChartComponent implements OnInit, OnChanges {
 
     private addLabelsToTheDonut() {
         this.labels = this.g
-                .selectAll('allLabels')
-                .data(this.pieData)
-                .enter()
-                .append('text')
-                .text(this.labelValueGetter)
-                .attr('transform', (datum, index) =>{
-            return 'translate(' + this.arc.centroid(datum) + ')';
-        })
+            .selectAll('allLabels')
+            .data(this.pieData)
+            .enter()
+            .append('text')
+            .text(this.labelValueGetter)
+            .attr('transform', (datum, index) => {
+                return 'translate(' + this.arc.centroid(datum) + ')';
+            })
             .style('font-size', '8px')
-                .style('text-anchor', 'middle');
+            .style('text-anchor', 'middle');
 
     }
 
-    private labelValueGetter = (datum,index) =>  {
+    private labelValueGetter = (datum, index) => {
         return this.labelValueFn(this.rawData[index]);
     }
 

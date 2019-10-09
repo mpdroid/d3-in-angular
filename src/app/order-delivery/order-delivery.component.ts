@@ -4,6 +4,7 @@ import { ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 
 import { AreaChartComponent } from './../area-chart/area-chart.component';
+import { ChartControlsService } from '../chart-controls.service';
 
 export class DeliveryMetric {
   state: string;
@@ -29,7 +30,7 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
 
   @ViewChild('areaChart', { static: true }) chart: AreaChartComponent;
 
-  chartData: number[] = [];
+  chartData = [];
 
   refreshInterval;
 
@@ -37,7 +38,7 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
 
   displayedColumns = ['legend', 'stateDisplayValue', 'mean', 'stdDev'];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, public chartControlsService: ChartControlsService) { }
 
   ngOnInit() {
   }
@@ -49,8 +50,10 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
     this.generateData();
     this.chart.data = [...this.chartData];
     this.refreshInterval = setInterval(() => {
-      this.generateData();
-      this.chart.data = [...this.chartData];
+      if(document.hasFocus()) {
+        this.generateData();
+        this.chart.data = [...this.chartData];  
+      }
     }, 1000);
 
   }
@@ -62,10 +65,6 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
   }
 
   ngAfterContentInit() {
-    this.initialize();
-  }
-
-  onSelect(event) {
     this.initialize();
   }
 
@@ -113,8 +112,6 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
       sigmaTotalTime
     ));
 
-    console.log(this.deliveryMetrics);
-
     let prandomizer = d3.randomNormal(meanPrepTime, sigmaPrepTime);
     let wrandomizer = d3.randomNormal(meanWaitTime, sigmaWaitTime);
     let trandomizer = d3.randomNormal(meanTransitTime, sigmaTransitTime);
@@ -145,6 +142,10 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
 
   navigateLeft() {
     this.router.navigate(['/status']);
+  }
+
+  toggleData(event) {
+    this.chartControlsService.showData = event.checked;
   }
 }
 

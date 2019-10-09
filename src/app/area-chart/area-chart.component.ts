@@ -103,7 +103,7 @@ export class AreaChartComponent implements OnInit, OnChanges {
     private createXAxis() {
         this.x = d3.scaleLinear()
             .domain([0, 45])
-            .range([20, 180]);
+            .range([30, 170]);
         this.g.append('g')
             .attr('transform', 'translate(0,90)')
             .attr("stroke-width", 0.5)
@@ -128,19 +128,19 @@ export class AreaChartComponent implements OnInit, OnChanges {
             .domain([0, 200])
             .range([90, 10]);
         this.g.append('g')
-            .attr('transform', 'translate(20,0)')
+            .attr('transform', 'translate(30,0)')
             .attr("stroke-width", 0.5)
             .call(d3.axisLeft(this.y).tickSize(0).tickFormat(''));
         this.g.append('g')
-            .attr('transform', 'translate(20,0)')
+            .attr('transform', 'translate(30,0)')
             .style("stroke-dasharray", ("1,1"))
             .attr("stroke-width", 0.1)
-            .call(d3.axisLeft(this.y).ticks(4).tickSize(-160))
+            .call(d3.axisLeft(this.y).ticks(4).tickSize(-140))
             .style('font-size', '6');
 
         this.g.append('text')
             .attr('text-anchor', 'middle')
-            .attr('transform', 'translate(5,50) rotate(-90)')
+            .attr('transform', 'translate(10,50) rotate(-90)')
             .style('font-size', 8)
             .text('Frequency');
     }

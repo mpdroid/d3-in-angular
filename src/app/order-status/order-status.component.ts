@@ -6,6 +6,8 @@ import { ViewChild } from '@angular/core';
 import { DonutChartComponent } from './../donut-chart/donut-chart.component';
 
 import * as HOBBITON from './hobbiton.json';
+import { ChartControlsService } from '../chart-controls.service';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 export class OrderState {
   state: string;
@@ -31,7 +33,7 @@ export class OrderStatusComponent implements OnInit, OnDestroy, AfterContentInit
 
   refreshInterval;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, public chartControlsService: ChartControlsService) { }
 
   ngOnInit() {
   }
@@ -43,8 +45,10 @@ export class OrderStatusComponent implements OnInit, OnDestroy, AfterContentInit
     this.generateData();
     this.chart.data = [...this.chartData];
     this.refreshInterval = setInterval(() => {
-      this.updateStates();
-      this.chart.data = [...this.chartData];
+      if (document.hasFocus()) {
+        this.updateStates();
+        this.chart.data = [...this.chartData];
+      }
     }, 1000);
 
   }
@@ -100,6 +104,9 @@ export class OrderStatusComponent implements OnInit, OnDestroy, AfterContentInit
     this.router.navigate(['/delivery']);
   }
 
+  toggleData(event: MatSlideToggleChange) {
+    this.chartControlsService.showData = event.checked;
+  }
 }
 
 export function randomInt(min, max) {

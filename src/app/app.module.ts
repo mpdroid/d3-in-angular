@@ -10,6 +10,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { OrderStatusComponent } from './order-status/order-status.component';
 import { DonutChartComponent } from './donut-chart/donut-chart.component';
 import { OrderDeliveryComponent } from './order-delivery/order-delivery.component';
@@ -32,7 +33,9 @@ import { AreaChartComponent } from './area-chart/area-chart.component';
     MatCardModule,
     MatSelectModule,
     MatTableModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSlideToggleModule
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

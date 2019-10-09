@@ -6,13 +6,11 @@
     </mat-card-title>
     <mat-card-content id="ordersByStatus" #ordersByStatus>
         <div id="chartAndDataContainer">
-            <div id="chartContainer">
+            <div id="chartContainer" [ngClass]="{'half': chartControlsService.showData}">
                 <app-donut-chart #ordersByStatusChart [data]="chartData"></app-donut-chart>
             </div>
-            <div id="ordersByStatusTable">
-                <table mat-table [dataSource]="orderStates"
-                       *ngIf="orderStates"
-                       class="mat-elevation-z8">
+            <div id="ordersByStatusTable" *ngIf="chartControlsService.showData">
+                <table mat-table [dataSource]="orderStates" *ngIf="orderStates" class="mat-elevation-z8">
                     <ng-container matColumnDef="legend">
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let element" [ngClass]="element.state">&#9632;</td>
@@ -30,5 +28,10 @@
                 </table>
             </div>
         </div>
+        <mat-slide-toggle class="show-data" color="primary" 
+            [checked]="chartControlsService.showData"
+            (change)="toggleData($event)">
+            Show data
+        </mat-slide-toggle>
     </mat-card-content>
 </mat-card>

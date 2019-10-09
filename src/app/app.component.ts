@@ -1,5 +1,11 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
+import { ChartControlsService } from './chart-controls.service';
+
+//https://stackoverflow.com/questions/38087013/angular2-web-speech-api-voice-recognition
+export interface IWindow extends Window {
+  webkitSpeechRecognition: any;
+}
 
 @Component({
   selector: 'app-root',
@@ -10,47 +16,61 @@ export class AppComponent implements OnInit {
   title = 'Using d3 within Angular 8';
   speechRecogitionState = false;
 
-  constructor(private router: Router, private ngZone: NgZone) {}
+  constructor(
+    private router: Router,
+    private ngZone: NgZone,
+    public chartControlsService: ChartControlsService) { }
 
   ngOnInit() {
   }
 
   toggleSpeechRecognition() {
     if ('webkitSpeechRecognition' in window) {
-        const recognition = new window['webkitSpeechRecognition']();
+      const { webkitSpeechRecognition }: IWindow = <IWindow>window;
+      const recognition = new webkitSpeechRecognition();
 
-        recognition.continuous = true;
-        recognition.onresult = (event) => {
-          const voiceCommand = event.results[event.results.length-1][0].transcript;
+      recognition.continuous = true;
+      recognition.onresult = (event) => {
+        const voiceCommand = event.results[event.results.length - 1][0].transcript;
 
-          this.handleVoiceCommand(voiceCommand);
-        }
+        this.handleVoiceCommand(voiceCommand);
+      }
 
-        recognition.start();
+      recognition.start();
     }
   }
 
-    handleVoiceCommand(command) {
-        const deliveryMatcher = new RegExp('.*delivery.*');
-        const statusMatcher = new RegExp('.*status.*');
-        console.log(command);
-        console.log(deliveryMatcher.test(command.trim()));
-        console.log(statusMatcher.test(command.trim()));
-        if (deliveryMatcher.test(command.trim())) {
-            this.navigate('/delivery');
-            return;
-         }
-        if (statusMatcher.test(command.trim())) {
-            this.navigate('/status');
-            return;
-         }
+  handleVoiceCommand(command) {
+    const deliveryMatcher = new RegExp('.*delivery.*',"i");
+    const statusMatcher = new RegExp('.*status.*',"i");
+    const hideMatcher = new RegExp('.*hide.*data.*',"i");
+    const showMatcher = new RegExp('.*show.*data.*',"i");
+    console.log(command);
+    console.log(deliveryMatcher.test(command.trim()));
+    console.log(statusMatcher.test(command.trim()));
+    if (deliveryMatcher.test(command.trim())) {
+      this.navigate('/delivery');
+      return;
     }
+    if (statusMatcher.test(command.trim())) {
+      this.navigate('/status');
+      return;
+    }
+    if (showMatcher.test(command.trim())) {
+      this.chartControlsService.showData = true;
+      return;
+    }
+    if (hideMatcher.test(command.trim())) {
+      this.chartControlsService.showData = false;
+      return;
+    }
+  }
 
-    navigate(path) {
+  navigate(path) {
     this.ngZone.run(() => {
-        this.router.navigate([path]);
+      this.router.navigate([path]);
     });
 
-    }
+  }
 
 }
