@@ -57,9 +57,10 @@ export class AreaChartComponent implements OnInit, OnChanges {
 
         // d3 area and histogram functions  has to be declared after x and y functions are defined
         this.area = d3.area()
-            .x((datum: any) => this.x(datum.x0))
+            .x((datum: any) => this.x(d3.mean([datum.x1, datum.x2])))
             .y0(this.y(0))
-            .y((datum: any) => this.y(datum.x1));
+            .y1((datum: any) => this.y(datum.length));
+
 
         this.histogram = d3.histogram()
             .value((datum) => datum)
@@ -144,7 +145,6 @@ export class AreaChartComponent implements OnInit, OnChanges {
             .style('font-size', 8)
             .text('Frequency');
     }
-
     private createAreaCharts() {
         this.paths = [];
         this.bins.forEach((row, index) => {
@@ -153,10 +153,8 @@ export class AreaChartComponent implements OnInit, OnChanges {
                 .attr('fill', this.colorScale('' + index))
                 .attr("stroke-width", 0.1)
                 .attr('opacity', 0.5)
-                .attr('d', d3.area()
-                    .x((datum: any) => this.x(d3.mean([datum.x1, datum.x2])))
-                    .y0(this.y(0))
-                    .y1((datum: any) => this.y(datum.length))));
+                .attr('d', (datum: any) => this.area(datum))
+            );
         });
     }
 
