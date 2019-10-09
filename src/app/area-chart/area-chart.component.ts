@@ -107,7 +107,7 @@ export class AreaChartComponent implements OnInit, OnChanges {
         this.g.append('g')
             .attr('transform', 'translate(0,90)')
             .attr("stroke-width", 0.5)
-            .call(d3.axisBottom(this.x).tickSize(0).tickFormat(''));
+            .call(d3.axisBottom(this.x).tickSize(0).tickFormat(<any>''));
 
         this.g.append('g')
             .attr('transform', 'translate(0,90)')
@@ -130,7 +130,7 @@ export class AreaChartComponent implements OnInit, OnChanges {
         this.g.append('g')
             .attr('transform', 'translate(30,0)')
             .attr("stroke-width", 0.5)
-            .call(d3.axisLeft(this.y).tickSize(0).tickFormat(''));
+            .call(d3.axisLeft(this.y).tickSize(0).tickFormat(<any>''));
         this.g.append('g')
             .attr('transform', 'translate(30,0)')
             .style("stroke-dasharray", ("1,1"))
@@ -154,9 +154,9 @@ export class AreaChartComponent implements OnInit, OnChanges {
                 .attr("stroke-width", 0.1)
                 .attr('opacity', 0.5)
                 .attr('d', d3.area()
-                    .x((datum) => this.x(d3.mean([datum.x1, datum.x2])))
+                    .x((datum: any) => this.x(d3.mean([datum.x1, datum.x2])))
                     .y0(this.y(0))
-                    .y1((datum) => this.y(datum.length))));
+                    .y1((datum: any) => this.y(datum.length))));
         });
     }
 
@@ -177,9 +177,9 @@ export class AreaChartComponent implements OnInit, OnChanges {
             path.datum(this.bins[index])
                 .transition().duration(1000)
                 .attr('d', d3.area()
-                    .x((datum) => this.x(d3.mean([datum.x1, datum.x2])))
+                    .x((datum: any) => this.x(d3.mean([datum.x1, datum.x2])))
                     .y0(this.y(0))
-                    .y1((datum) => this.y(datum.length)));
+                    .y1((datum: any) => this.y(datum.length)));
 
         });
     }
