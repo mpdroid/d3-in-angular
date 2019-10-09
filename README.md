@@ -2,9 +2,9 @@
 
 This projects shows how to build reactive charts inside an Angular 8 application using the D3 JavaScript framework.
 
-Click here to view a live demo.
+Click [here](https://mpdroid.github.io/d3-in-angular/) to view the demo app.
 
-Click here to read the full article that describes some of the motivations behind the code. 
+Click [here](https://medium.com/@marvinpdroid/reactive-charts-in-angular-8-using-d3-4550bb0b4255)  to read the full article that describes some of the motivations behind the code. 
 
 ## Main Dependencies
 
