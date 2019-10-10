@@ -2,11 +2,6 @@ import { Component, OnInit, ElementRef, ViewEncapsulation, Input, SimpleChanges,
 
 import * as d3 from 'd3';
 
-export class AreaDatum {
-    x: number;
-    y: number;
-}
-
 @Component({
     selector: 'app-area-chart',
     encapsulation: ViewEncapsulation.None,
@@ -17,7 +12,9 @@ export class AreaChartComponent implements OnInit, OnChanges {
     @Input() transitionTime = 1000;
     @Input() xmax = 45;
     @Input() ymax = 200;
+    @Input() hticks = 60;
     @Input() data: number[];
+    @Input() showLabel = 1;
     hostElement; // Native element hosting the SVG container
     svg; // Top level SVG element
     g; // SVG Group element
@@ -67,7 +64,7 @@ export class AreaChartComponent implements OnInit, OnChanges {
         this.histogram = d3.histogram()
             .value((datum) => datum)
             .domain([0, this.xmax])
-            .thresholds(this.x.ticks(60));
+            .thresholds(this.x.ticks(this.hticks));
 
         // data has to be processed after area and histogram functions are defined
         this.processData(data);
@@ -119,11 +116,6 @@ export class AreaChartComponent implements OnInit, OnChanges {
             .attr("stroke-width", 0.1)
             .call(d3.axisBottom(this.x).ticks(10).tickSize(-80));
 
-        //       this.g.append('text')
-        //            .attr('text-anchor', 'middle')
-        //            .attr('transform', 'translate(100,6)')
-        //            .style('font-size', 8)
-        //            .text('Delivery Time in Minutes');
     }
 
     private createYAxis() {
@@ -141,11 +133,13 @@ export class AreaChartComponent implements OnInit, OnChanges {
             .call(d3.axisLeft(this.y).ticks(4).tickSize(-140))
             .style('font-size', '6');
 
-        this.g.append('text')
+        if (this.showLabel === 1) {
+            this.g.append('text')
             .attr('text-anchor', 'middle')
             .attr('transform', 'translate(10,50) rotate(-90)')
             .style('font-size', 8)
             .text('Frequency');
+        }
     }
     private createAreaCharts() {
         this.paths = [];

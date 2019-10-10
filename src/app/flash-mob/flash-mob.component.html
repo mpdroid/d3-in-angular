@@ -1,12 +1,12 @@
 <div class="container">
     <app-area-chart #areaChart [data]="chartData" [transitionTime]="transitionTime"
-    xmax="50"
-    ymax="250"
+    xmax="90"
+    ymax="150"
+    hticks="80"
+    showLabel="0"
     ></app-area-chart>
 </div>
-<audio id="audio" #audio controls crossorigin="anonymous">
+<audio  #audio crossorigin="anonymous">
     <source src="https://d3ng.s3.us-east-2.amazonaws.com/xlf.m4a" type="audio/mpeg">
-    <!-- <source src="https://d3ng.s3.us-east-2.amazonaws.com/dd.mp3" type="audio/mpeg"> -->
-    <!-- <source src="assets/xlf.m4a" type="audio/mpeg"> -->
         Your browser does not support the audio element.
-  </audio>
+</audio>

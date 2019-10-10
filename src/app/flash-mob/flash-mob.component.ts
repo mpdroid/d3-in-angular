@@ -21,42 +21,37 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
 
   transitionTime = 200;
   refreshInterval;
+  driftInterval;
 
   audioContext;
   analyzer;
   dataArray;
 
+  N = 5;
+  means = [15,30,45,60,75];
+  drifts = [0.1,-.1,0,.1,-.1 ];
+  // drifts = [0.1,-.1,.1,-.1,.1,-.1,.1,-.1];
 
 
   constructor(private chartControlsService: ChartControlsService) {
       this.chartControlsService.fullScreen = true;
    }
 
-  ngOnInit() {
-
-    // if(isDevMode()) {
-    //     this.audio.nativeElement.source = 'assets/xlf.m4a';
-    // }
-
-  }
+  ngOnInit() {  }
 
   initialize() {
 
-    if ('AudioContext' in window) {
-      const audioContext = new AudioContext();
-      const audioSrc = audioContext.createMediaElementSource(this.audio.nativeElement);
-      this.analyzer = audioContext.createAnalyser();
+    const audioContext = new AudioContext();
+    const audioSrc = audioContext.createMediaElementSource(this.audio.nativeElement);
+    this.analyzer = audioContext.createAnalyser();
 
- 
-      const bufferLength = this.analyzer.frequencyBinCount;
-      console.log('bufferlength', bufferLength);
-      this.dataArray = new Uint8Array(bufferLength);
-      this.analyzer.fftSize = 2048;
-      audioSrc.connect(this.analyzer);
-      audioSrc.connect(audioContext.destination);
-      this.analyzer.getByteFrequencyData(this.dataArray);
 
-   }
+    const bufferLength = this.analyzer.frequencyBinCount;
+    this.dataArray = new Uint8Array(bufferLength);
+    // this.analyzer.fftSize = 2048;
+    audioSrc.connect(this.analyzer);
+    audioSrc.connect(audioContext.destination);
+    this.analyzer.getByteFrequencyData(this.dataArray);
 
 
     if (this.refreshInterval) {
@@ -71,6 +66,7 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
         this.chart.data = [...this.chartData];  
       }
     }, this.transitionTime);
+    this.drift();
 
   }
 
@@ -78,12 +74,23 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
     if (this.refreshInterval) {
       clearInterval(this.refreshInterval);
     }
+    if (this.driftInterval) {
+      clearInterval(this.driftInterval);
+    }
   }
 
   ngAfterContentInit() {
     this.initialize();
   }
 
+  drift() {
+    this.driftInterval = setInterval(() => {
+       for (let i = 0; i < this.N; i++) {
+         this.drifts[i] = -this.drifts[i];
+       }
+    }, 160 * this.transitionTime);
+
+  }
   generateData() {
     this.chartData = [];
     let maxDecibelRatio = 1;
@@ -91,62 +98,28 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
     if (this.analyzer) {
 
       this.analyzer.getByteFrequencyData(this.dataArray);
-      // maxDecibelRatio = this.analyzer.maxDecibels / 100 ;
-      // console.log(maxDecibelRatio);
-      console.log('data array mean', 1.1 * d3.mean(this.dataArray));
       mf = 200.0 / d3.mean(this.dataArray) ;
-      console.log(mf);
-
-      //this.chartData.push(this.dataArray);
     }
-    const meanPrepTime = randomInt(10, 11) + 0.0 ;
-    const meanWaitTime = randomInt(8, 9) + 0.0;
-    const meanTransitTime = randomInt(9, 10) + 0.0;
 
-    const meanTotalTime = meanPrepTime + meanWaitTime + meanTransitTime;
-
-    // const sigmaPrepTime = mf * randomInt(1, 1) ;
-    const sigmaPrepTime = mf * randomInt(1, 2) ;
-    console.log('sprep', mf);
-    const sigmaWaitTime = randomInt(2, 3);
-    const sigmaTransitTime = randomInt(1, 2);
-
-    const sigmaTotalTime = Math.floor(
-      Math.sqrt(Math.pow(sigmaPrepTime, 2) +
-        Math.pow(sigmaWaitTime, 2) +
-        Math.pow(sigmaTransitTime, 2))
-    );
-
-
-    let prandomizer = d3.randomNormal(8, sigmaPrepTime);
-    let wrandomizer = d3.randomNormal(16, sigmaPrepTime);
-    let trandomizer = d3.randomNormal(24, sigmaPrepTime);
-    let qrandomizer = d3.randomNormal(32, sigmaPrepTime);
-    let srandomizer = d3.randomNormal(40, sigmaPrepTime);
-
-    const ptimes = [];
-    const wtimes = [];
-    const ttimes = [];
-    const qtimes = [];
-    const stimes = [];
-    for (let i = 0; i < 1000; i++) {
-      const p = Math.floor(prandomizer());
-      const w = Math.floor(wrandomizer());
-      const t = Math.floor(trandomizer());
-      const q = Math.floor(qrandomizer());
-      const s = srandomizer();
-      ptimes.push(p);
-      wtimes.push(w);
-      ttimes.push(t);
-      qtimes.push(q);
-      stimes.push(s);
+    const sigma = mf * randomInt(2, 2) ;
+    const randoms = [];
+    for( let i = 0; i < this.N;i++) {
+      this.means[i] += this.drifts[i];
+      const randomizer = d3.randomNormal(this.means[i], sigma);
+      const times = [];
+      for (let i = 0; i < 1000; i++) {
+        times.push(randomizer());
+      }
+      this.chartData.push(times);
     }
-    this.chartData.push(ptimes);
-    this.chartData.push(wtimes);
-    this.chartData.push(ttimes);
-    this.chartData.push(qtimes);
-    this.chartData.push(stimes);
-    // this.chartData.push(totaltimes);
+
+
+
+    // this.chartData.push(ptimes);
+    // this.chartData.push(qtimes);
+    // this.chartData.push(rtimes);
+    // this.chartData.push(stimes);
+    // this.chartData.push(ttimes);
   }
 
 }
