@@ -33,7 +33,10 @@ export class OrderStatusComponent implements OnInit, OnDestroy, AfterContentInit
 
   refreshInterval;
 
-  constructor(private router: Router, public chartControlsService: ChartControlsService) { }
+  constructor(private router: Router, public chartControlsService: ChartControlsService) { 
+    this.chartControlsService.fullScreen = false;
+
+  }
 
   ngOnInit() {
   }

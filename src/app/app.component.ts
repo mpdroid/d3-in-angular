@@ -5,6 +5,7 @@ import { ChartControlsService } from './chart-controls.service';
 //https://stackoverflow.com/questions/38087013/angular2-web-speech-api-voice-recognition
 export interface IWindow extends Window {
   webkitSpeechRecognition: any;
+  webkitAudioContext: any;
 }
 
 @Component({
@@ -15,6 +16,7 @@ export interface IWindow extends Window {
 export class AppComponent implements OnInit {
   title = 'Using d3 within Angular 8';
   speechRecogitionState = false;
+  flashMob = false;
 
   constructor(
     private router: Router,
@@ -26,7 +28,7 @@ export class AppComponent implements OnInit {
 
   toggleSpeechRecognition() {
     if ('webkitSpeechRecognition' in window) {
-      const { webkitSpeechRecognition }: IWindow = <IWindow>window;
+      const { webkitSpeechRecognition }: IWindow = <IWindow>(window as unknown);
       const recognition = new webkitSpeechRecognition();
 
       recognition.continuous = true;
@@ -45,9 +47,7 @@ export class AppComponent implements OnInit {
     const statusMatcher = new RegExp('.*status.*',"i");
     const hideMatcher = new RegExp('.*hide.*data.*',"i");
     const showMatcher = new RegExp('.*show.*data.*',"i");
-    console.log(command);
-    console.log(deliveryMatcher.test(command.trim()));
-    console.log(statusMatcher.test(command.trim()));
+    const flashMatcher = new RegExp('.*flash.*',"i");
     if (deliveryMatcher.test(command.trim())) {
       this.navigate('/delivery');
       return;
@@ -62,6 +62,11 @@ export class AppComponent implements OnInit {
     }
     if (hideMatcher.test(command.trim())) {
       this.chartControlsService.showData = false;
+      return;
+    }
+    if (flashMatcher.test(command.trim())) {
+      this.flashMob = true;
+      this.navigate('/flashmob');
       return;
     }
   }

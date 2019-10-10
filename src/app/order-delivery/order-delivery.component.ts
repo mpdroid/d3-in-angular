@@ -38,7 +38,9 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
 
   displayedColumns = ['legend', 'stateDisplayValue', 'mean', 'stdDev'];
 
-  constructor(private router: Router, public chartControlsService: ChartControlsService) { }
+  constructor(private router: Router, public chartControlsService: ChartControlsService) {
+    this.chartControlsService.fullScreen = false;
+   }
 
   ngOnInit() {
   }

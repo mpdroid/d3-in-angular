@@ -14,7 +14,9 @@ export class AreaDatum {
     styleUrls: ['./area-chart.component.scss']
 })
 export class AreaChartComponent implements OnInit, OnChanges {
-
+    @Input() transitionTime = 1000;
+    @Input() xmax = 45;
+    @Input() ymax = 200;
     @Input() data: number[];
     hostElement; // Native element hosting the SVG container
     svg; // Top level SVG element
@@ -64,7 +66,7 @@ export class AreaChartComponent implements OnInit, OnChanges {
 
         this.histogram = d3.histogram()
             .value((datum) => datum)
-            .domain([0, 45])
+            .domain([0, this.xmax])
             .thresholds(this.x.ticks(60));
 
         // data has to be processed after area and histogram functions are defined
@@ -103,7 +105,7 @@ export class AreaChartComponent implements OnInit, OnChanges {
 
     private createXAxis() {
         this.x = d3.scaleLinear()
-            .domain([0, 45])
+            .domain([0, this.xmax])
             .range([30, 170]);
         this.g.append('g')
             .attr('transform', 'translate(0,90)')
@@ -126,7 +128,7 @@ export class AreaChartComponent implements OnInit, OnChanges {
 
     private createYAxis() {
         this.y = d3.scaleLinear()
-            .domain([0, 200])
+            .domain([0, this.ymax])
             .range([90, 10]);
         this.g.append('g')
             .attr('transform', 'translate(30,0)')
@@ -173,7 +175,7 @@ export class AreaChartComponent implements OnInit, OnChanges {
     private updateAreaCharts() {
         this.paths.forEach((path, index) => {
             path.datum(this.bins[index])
-                .transition().duration(1000)
+                .transition().duration(this.transitionTime)
                 .attr('d', d3.area()
                     .x((datum: any) => this.x(d3.mean([datum.x1, datum.x2])))
                     .y0(this.y(0))

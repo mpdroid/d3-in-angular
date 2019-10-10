@@ -6,5 +6,6 @@ import { Injectable } from '@angular/core';
 export class ChartControlsService {
 
   showData = false;
+  fullScreen = false;
   constructor() { }
 }
