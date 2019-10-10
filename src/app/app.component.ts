@@ -65,7 +65,7 @@ export class AppComponent implements OnInit {
       return;
     }
     if (flashMatcher.test(command.trim())) {
-      this.flashMob = true;
+      this.chartControlsService.fullScreen = true;
       this.navigate('/flashmob');
       return;
     }

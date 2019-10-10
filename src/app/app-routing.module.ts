@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { OrderStatusComponent } from './order-status/order-status.component';
 import { OrderDeliveryComponent } from './order-delivery/order-delivery.component';
-import { FlashMobComponent } from './flash-mob/flash-mob.component';
+import { FlashMobComponent } from './fm/flash-mob.component';
 
 
 const routes: Routes = [
