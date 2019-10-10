@@ -30,7 +30,6 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
   N = 5;
   means = [15,30,45,60,75];
   drifts = [0.1,-.1,0,.1,-.1 ];
-  // drifts = [0.1,-.1,.1,-.1,.1,-.1,.1,-.1];
 
 
   constructor(private chartControlsService: ChartControlsService) {
@@ -44,11 +43,8 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
     const audioContext = new AudioContext();
     const audioSrc = audioContext.createMediaElementSource(this.audio.nativeElement);
     this.analyzer = audioContext.createAnalyser();
-
-
     const bufferLength = this.analyzer.frequencyBinCount;
     this.dataArray = new Uint8Array(bufferLength);
-    // this.analyzer.fftSize = 2048;
     audioSrc.connect(this.analyzer);
     audioSrc.connect(audioContext.destination);
     this.analyzer.getByteFrequencyData(this.dataArray);
@@ -66,7 +62,7 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
         this.chart.data = [...this.chartData];  
       }
     }, this.transitionTime);
-    this.drift();
+   this.drift();
 
   }
 
@@ -93,7 +89,6 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
   }
   generateData() {
     this.chartData = [];
-    let maxDecibelRatio = 1;
     let mf = 1.0;
     if (this.analyzer) {
 
@@ -102,13 +97,12 @@ export class FlashMobComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     const sigma = mf * randomInt(2, 2) ;
-    const randoms = [];
     for( let i = 0; i < this.N;i++) {
       this.means[i] += this.drifts[i];
       const randomizer = d3.randomNormal(this.means[i], sigma);
       const times = [];
       for (let i = 0; i < 1000; i++) {
-        times.push(randomizer());
+        times.push(Math.floor(randomizer()));
       }
       this.chartData.push(times);
     }
